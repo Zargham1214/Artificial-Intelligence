@@ -1,0 +1,23 @@
+import numpy as np
+from numpy import random
+w=np.zeros(8)
+step=0.01
+w1 = [5,8,1,7,3,5,4,2]
+
+points = [(np.array([0,0,0,0,0,0,0,0]),0)]
+for i in range(100000):
+    x = [(np.array(random.randint(5,size=(8))))]
+    y_multi= np.multiply(x,w1) #score 
+    y = np.sum(y_multi)+0.5#noise in score
+    point= [x,y]
+    
+    points.append(point)
+  
+points= np.delete(points,(0),axis=0)##since first entry is composed of zeros
+
+def dF(w):
+    for x,y in points:
+        loss=2*(w.dot(x[0])-y)*x[0]
+        w=w-step*loss#stochastic gradient descent which is updating w for "each" trainig example
+    print("Approximation of weights is : ", w)
+dF(w)

@@ -1,0 +1,33 @@
+def levenshtein_distance(string1, string2):
+
+
+    rows = len(string1) + 1
+    cols = len(string2) + 1
+    distance = [[0 for x in range(cols)] for x in range(rows)]
+
+    #for base case of first column
+    for i in range(1, rows):
+        distance[i][0] = i
+
+    # for base case of first row
+    for i in range(1, cols):
+        distance[0][i] = i
+
+    for col in range(1, cols):
+        for row in range(1, rows):
+            if string1[row - 1] == string2[col - 1]:
+                cost = 0
+            else:
+                cost = 1
+            distance[row][col] = min(distance[row - 1][col] + 1,  # deletion
+                                 distance[row][col - 1] + 1,  # insertion
+                                 distance[row - 1][col - 1] + cost)  # substitution
+
+    for r in range(rows):
+       print(distance[r])#prinnt the  table of all dynamically calculated values
+
+    return distance[row][col]#total minumum no. of operation
+
+str1=input("Enter The String 1 : ")
+str2=input("Ebter the String 2 : ")
+print("Levenshtein distance is : ",levenshtein_distance(str1, str2))

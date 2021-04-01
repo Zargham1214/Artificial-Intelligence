@@ -1,0 +1,60 @@
+import numpy as np 
+
+#Implementation of Sigmoid function
+def sigmoid (x):
+    return 1/(1 + np.exp(-x))
+
+#derivative of sigmoid function
+def sigmoid_derivative(x):
+    return x * (1 - x)
+
+#Inputs for the XOR gate
+inputs = np.array([[0,0],[0,1],[1,0],[1,1]])
+#Expected Outputs for the XOR gate
+outputs = np.array([[0],[1],[1],[0]])
+
+epochs = 10000
+#learning rate
+lr = 0.5
+inputLayerNeurons= 2
+hiddenLayerNeurons= 2
+outputLayerNeurons = 1
+
+#Random weights and bias initialization for hidden layer
+hidden_weights = np.random.uniform(size=(inputLayerNeurons,hiddenLayerNeurons))
+hidden_bias =np.random.uniform(size=(1,hiddenLayerNeurons))
+
+#Random weights and bias initialization for output layer
+output_weights = np.random.uniform(size=(hiddenLayerNeurons,outputLayerNeurons))
+output_bias = np.random.uniform(size=(1,outputLayerNeurons))
+
+
+
+#Training algorithm
+for _ in range(epochs):
+	#Detereminig the outputs of neurons
+	#formula = weights.inputs+bias [w.x+b]
+	hidden_layer_activation = np.dot(inputs,hidden_weights)
+	hidden_layer_activation += hidden_bias
+	hidden_layer_output = sigmoid(hidden_layer_activation)
+
+	output_layer_activation = np.dot(hidden_layer_output,output_weights)
+	output_layer_activation += output_bias
+	predicted_output = sigmoid(output_layer_activation)
+
+	#Backpropagation
+	error = outputs - predicted_output
+	derivative_predicted_output = error * sigmoid_derivative(predicted_output)
+	
+	error_hidden_layer = derivative_predicted_output.dot(output_weights.T)
+	derivative_hidden_layer = error_hidden_layer * sigmoid_derivative(hidden_layer_output)
+
+	#Updating Weights and Biases
+	output_weights += hidden_layer_output.T.dot(derivative_predicted_output) * lr
+	output_bias += np.sum(derivative_predicted_output,axis=0,keepdims=True) * lr
+	hidden_weights += inputs.T.dot(derivative_hidden_layer) * lr
+	hidden_bias += np.sum(derivative_hidden_layer,axis=0,keepdims=True) * lr
+
+
+print("\nOutputs from my Neural Network : ",end='')
+print(*predicted_output)

@@ -1,0 +1,22 @@
+import pandas as pd
+import csv
+from sklearn import svm
+
+#Working on TrainingSet
+
+train_data = pd.read_csv("TrainingSet.csv")#reading all file
+features = train_data.iloc[:,0:4].values#extracting first 4 columns as features
+labels = train_data.iloc[:,4].values#column of all plants in traning data
+clf = svm.SVC()#calling support vector classifier
+clf.fit(features, labels)#Fitting the SVM model according to the given training data.
+
+#Working on TestSet1
+
+test_data = pd.read_csv("TestSet1.csv")
+test_features= test_data.iloc[:,0:4].values
+test_labels = clf.predict(test_features)#Performming classification on samples in test_features.
+
+print(test_labels)
+testData = pd.DataFrame(test_labels)
+testData.to_csv("results.csv", index=False, header=None)#writing the predicted values in a csv named results.csv
+
